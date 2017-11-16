@@ -1,0 +1,57 @@
+doctype html
+html
+  head
+    title The Library App
+    link(rel="stylesheet", type="text/css", href="css/style2.css")
+  body
+  #header
+    ul.nav
+      li
+        a(href="index.pug")
+          img.logo(src="images/logo.jpg")        
+      li
+        a(href="index.pug") Home
+      li
+        a(href="search.pug") Search books
+      li
+        a(href="#") About library
+      li
+        a(href="#") About Me
+  // header
+  .banner
+    form.input-field(action='/addBook', method='POST', autocomplete='off')
+      h2 Add book
+      label(for='name') Name of the Book
+      br
+      input.entry(type='text', name='name', placeholder="name of the book")
+      br
+      button.btn_signup(type='submit', name="sign-up") add book
+  
+    form.input-field(action='/addAuthor', method='POST', autocomplete='off')
+      h2 Add author
+      label(for='name') Name of the Author
+      br
+      input.entry(type='text', name='name', placeholder="name of the author")
+      br
+      button.btn_signup(type='submit', name="sign-up") add author
+  
+    form.input-field(action='/addRecord', method='POST', autocomplete='off')
+      h2 Add record
+      label(for='year') Published year
+      br
+      input.entry(type='text', name='year', placeholder="published year")
+      br
+      label(for='book_id') Book id
+      br
+      input.entry(type='text', name='book_id', placeholder="book_id")
+      br
+      label(for='author_id') Author id
+      br
+      input.entry(type='text', name='author_id', placeholder="author_id")
+      br
+      button.btn_signup(type='submit', name="sign-up") add record
+
+  .footer
+    p All rights reserved @ Mumtaz 
+  
+    

@@ -1,0 +1,57 @@
+doctype html
+html
+  head
+    title The Library App
+    link(rel="stylesheet", type="text/css", href="css/style.css")
+  body
+  #header
+    ul.nav
+      li
+        a(href="index.pug")
+          img.logo(src="images/logo.jpg")        
+      li
+        a(href="index.pug") Home
+      li
+        a(href="#") Contact us
+      li
+        a(href="#") About library
+      li
+        a(href="#") About Me
+  // header
+
+  .signup
+    .banner
+      img(src="images/banner.jpg")
+    form.input-field(action='/signup', method='POST', autocomplete='off')
+      h2 Sign Up!
+      input.name-signup(type='text', name='name', placeholder="Enter Your Name",autocomplete='off')
+      br
+      input.email-signup(type='text', name='email', placeholder="Enter your Email")
+      br
+      input.password-signup(type='password', name='password', placeholder= "Give a password")
+      br
+      button.btn_signup(type='submit', name="sign-up") Sign Up
+      p.para Already registered!
+        a.btn_login(href='#', role='button') login
+  script(src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js')
+  script(src="js/index.js")
+
+  .login
+    .login-field
+      form.login-form(action='/login', method='POST', autocomplete='off')
+        h2 Login
+        label(for='email') Enter Your Email
+        br
+        input.email(type='text', name='email', placeholder="example@email.com")
+        br
+        label(for='password') your password
+        br
+        input.password(type='password', name='password', placeholder= "****")
+        br
+        button.btn_signup(type='submit', name="sign-up") Login
+        p Not registered yet!
+          a.btn_login(href='/index.pug', role='button') Sign-up
+  
+
+  .footer
+    p All rights reserved @ Mumtaz 

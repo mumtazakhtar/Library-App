@@ -1,0 +1,86 @@
+body {
+    background-color: white;
+}
+
+#header {
+    padding: 0px 2px 2px 2px;
+    margin: 15px 2px 2px 2px;
+}
+
+ul li {
+    list-style: none;
+    color: white;
+    float: left;
+    text-decoration: none;
+    list-style-type: none;
+    display: inline;
+    padding: 10px 85px 0px 14px;
+    margin: 0px 7px 0px 0px;
+    font-size: 21px
+}
+
+.logo {
+    width: 30%;
+    margin: -18px 2px 2px 2px
+}
+
+a:hover {
+    background-color: white;
+    color: maroon;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    padding: 5px 5px 5px 5px;
+}
+
+.nav {
+
+    list-style: none;
+    color: white;
+    float: left;
+    display: inline;
+    margin: 2px 2px 28px 14px;
+    background-color: maroon;
+    padding: 18px 2px 2px 2px;
+}
+
+.input-field {
+    margin: 2px 2px 28px 494px;
+}
+
+.entry {
+    padding: 11px 16px 13px 55px;
+}
+
+.btn_signup {
+    margin: 2px 2px 2px 82px;
+    padding: 11px 22px 9px 17px;
+    background-color: maroon;
+    color: white;
+}
+
+.btn_signup:hover {
+    background-color: white;
+    color: maroon;
+}
+
+label {
+    margin: 2px 2px 2px 74px;
+}
+
+h2 {
+    margin: 2px 53px;
+    color: maroon;
+}
+
+.footer {
+    margin: 110px 2px 2px 2px;
+    padding: 2px 2px 2px 2px;
+    text-align: center;
+    background-color: maroon;
+    color: white;
+}
+
+.banner {}

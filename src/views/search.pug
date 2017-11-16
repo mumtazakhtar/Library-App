@@ -1,0 +1,53 @@
+doctype html
+html
+  head
+    title The Library App
+    link(rel="stylesheet", type="text/css", href="css/style.css")
+  body
+  #header
+    ul.nav
+      li
+        a(href="index.pug")
+          img.logo(src="images/logo.jpg")        
+      li
+        a(href="index.pug") Home
+      li
+        a(href="addEntry.pug") Add Entry
+      li
+        a(href="#") About library
+      li
+        a(href="#") About Me
+  // header
+  if message
+    p.message= message
+  .search
+   
+    form.author(action='/searchauthor', method='post', autocomplete='off')
+      h3 Search books by name of an author! 
+      input.author_name(type='text', name='author',placeholder="name of the author")
+      br
+      input.search_author(type='submit',value='Search')
+    if message1
+      p.message= message1
+    else if data
+      p.data(id=name) We have the following  #{data.books.length} book(s) written by this author
+      ul.datalist
+        each book in data.books
+          li= book.name
+   
+    form.book(action='/searchbook', method='post', autocomplete='off')
+      h3 Search by name of the book!
+      input.book_name(type='text', name='book',placeholder="name of the book")
+      br
+      input.search_book(type='submit',value='Search')
+    if message2
+      p.message= message2
+    else if output
+      p.data(id=book) This book is available! and is written  by the following author(s)
+      ul.datalist
+        each author in output.authors
+          li= author.name
+
+  .footer_search
+    p All rights reserved @ Mumtaz 
+
