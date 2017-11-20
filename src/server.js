@@ -2,13 +2,16 @@
 const Sequelize = require('sequelize');
 const bodyParser = require('body-parser');
 const express = require('express');
+const session = require('express-session')
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+//configurating dependencies
 const app = express();
 
-//Dependencies configuration
 const sequelize = new Sequelize('library_app', process.env.POSTGRES_USER,process.env.POSTGRES_PASSWORD,{
   host: 'localhost',
   dialect: 'postgres',
+  storage: './session.postgres',
   define: {
   	timestamps: false
   }
@@ -21,7 +24,18 @@ app.set('view engine','pug');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-//defining models
+app.use(session({
+  store: new SequelizeStore({
+    db: sequelize,
+    checkExpirationInterval: 15 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
+    expiration: 24 * 60 * 60 * 1000 // The maximum age (in milliseconds) of a valid session.
+  }),
+  secret: "mohammed",
+  saveUnitialized: true,
+  resave: false
+}))
+
+//Defining models
 const Author = sequelize.define('authors',{
 	name: Sequelize.STRING
 },{
@@ -59,19 +73,37 @@ const User = sequelize.define('users',{
  //<<-------------Routes--------------->>
  //get index page
  app.get('/',(req,res)=>{
- 	res.render('index.pug')
+
+ 	let user = req.session.user
+ 	
+ 	res.render('index.pug', {message:req.query.message})
  })
  //get search page
  app.get('/search.pug',(req,res)=>{
- 	res.render('search.pug')
- })
- //get result page
- app.get('/result.pug',(req,res)=>{
- 	res.render('result.pug')
- })
- //get add entry page
+ 	const user = req.session.user;
+
+ 	if(user === undefined){
+ 		res.redirect('/?message=' + encodeURIComponent("Please login to search books in library"))
+
+ 	}
+ 	else{
+ 		res.render("search");
+ 	}
+ 	
+ });
+
+  //get add entry page
  app.get('/addEntry.pug',(req,res)=>{
- 	res.render('addEntry.pug')
+
+ // let user = req.session.user;
+
+ // 	if(user === undefined){
+ // 		res.redirect('/?message=' + encodeURIComponent("Please login to add entry in library"))
+
+ // 	}
+ // 	else{
+ 		res.render("addEntry");
+ 	// }
  })
  //get home page
  app.get('/index.pug',(req,res)=>{
@@ -202,6 +234,15 @@ const User = sequelize.define('users',{
  		}
  	})
  })
+//Log out route
+app.get('/logout', (req,res)=>{
+  req.session.destroy(function(error) {
+		if(error) {
+			throw error;
+		}
+		res.redirect('/?message=' + encodeURIComponent("Successfully logged out."));
+	})
+})
 
 
 

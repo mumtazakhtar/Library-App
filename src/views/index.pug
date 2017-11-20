@@ -12,14 +12,17 @@ html
       li
         a(href="index.pug") Home
       li
-        a(href="#") Contact us
+        a(href="search.pug") Search Books
       li
-        a(href="#") About library
+        a(href="addEntry.pug") Add Books 
       li
         a(href="#") About Me
   // header
+  
 
   .signup
+    if message
+    p.message= message
     .banner
       img(src="images/banner.jpg")
     form.input-field(action='/signup', method='POST', autocomplete='off')

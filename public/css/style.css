@@ -4,7 +4,7 @@ body {
 
 
 #header {
-    padding: 0px 2px 2px 0px;
+    padding: 0px 2px 2px 3px;
     margin: 15px 2px 2px -16px;
 }
 
@@ -46,7 +46,7 @@ a {
     float: left;
     display: inline;
     background-color: maroon;
-    padding: 16px 2px 2px 51px;
+    padding: 16px 2px 2px 25px;
     margin: 7px 2px 2px 2px;
 }
 
@@ -143,7 +143,11 @@ h2 {
 }
 
 .search {
-    padding: 32px 2px 2px 2px;
+        padding: 0px 2px 2px 2px;
+    background-image: url(../images/banner3.jpg);
+    background-repeat: no-repeat;
+    max-width: 100%;
+    margin: 133px 2px 44px 2px;
 }
 
 .book {
@@ -215,7 +219,7 @@ h2 {
 }
 
 .footer_search {
-    margin: 192px 2px 2px 2px;
+    margin: 102px 2px 2px 2px;
     padding: 2px 2px 2px 2px;
     text-align: center;
     background-color: maroon;

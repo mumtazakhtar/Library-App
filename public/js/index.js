@@ -5,9 +5,6 @@ $(document).ready(function(){
 
 		})
 		
-
-
-
 	})
 })
 
