@@ -5,9 +5,10 @@ const express = require('express');
 const session = require('express-session')
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-//configurating dependencies
+//<----configurating dependencies------>
 const app = express();
 
+//<-----connecting to database----->
 const sequelize = new Sequelize('library_app', process.env.POSTGRES_USER,process.env.POSTGRES_PASSWORD,{
   host: 'localhost',
   dialect: 'postgres',
@@ -16,6 +17,7 @@ const sequelize = new Sequelize('library_app', process.env.POSTGRES_USER,process
   	timestamps: false
   }
 });
+//<------static files------>
 app.use(express.static('../public'));
 app.use(express.static('../public/css'))
 
@@ -35,7 +37,7 @@ app.use(session({
   resave: false
 }))
 
-//Defining models
+//<------Defining models-------->
 const Author = sequelize.define('authors',{
 	name: Sequelize.STRING
 },{
@@ -65,20 +67,20 @@ const User = sequelize.define('users',{
 	timestamps: false
 })
 
-//defining relationship between tables
+//<--Defining relationship between tables-->
  
  Author.belongsToMany(Book,{through: Record})
  Book.belongsToMany(Author,{through: Record})
 
- //<<-------------Routes--------------->>
- //get index page
+ //<<----------------Routes------------------>>
+ //<-----get index page------->
  app.get('/',(req,res)=>{
 
  	let user = req.session.user
  	
  	res.render('index.pug', {message:req.query.message})
  })
- //get search page
+ //<-------get search page---------->
  app.get('/search.pug',(req,res)=>{
  	const user = req.session.user;
 
@@ -92,29 +94,29 @@ const User = sequelize.define('users',{
  	
  });
 
-  //get add entry page
+  //<-------get add entry page----->
  app.get('/addEntry.pug',(req,res)=>{
 
- // let user = req.session.user;
+ const user = req.session.user;
+console.log(user)
+ 	if(user === undefined){
+ 		res.redirect('/?message=' + encodeURIComponent("Please login to add entry in library"))
 
- // 	if(user === undefined){
- // 		res.redirect('/?message=' + encodeURIComponent("Please login to add entry in library"))
-
- // 	}
- // 	else{
+ 	}
+ 	else{
  		res.render("addEntry");
- 	// }
+ 	 }
  })
- //get home page
+ //<-----get home page-------->
  app.get('/index.pug',(req,res)=>{
  	res.render('index.pug')
  })
- //login page
+ //<-------login page--------->
  app.get('/login',(req,res)=>{
  	res.render('login.pug')
  })
 
-//add books
+//<--------add books--------->
  app.post('/addBook',(req,res)=>{
 
  	let inputname = req.body.name
@@ -125,7 +127,7 @@ const User = sequelize.define('users',{
  		res.redirect('/')
  	})
  })
- //add author
+ //<-----add author-------->
  app.post('/addAuthor',(req,res)=>{
 
  	let inputname = req.body.name
@@ -136,7 +138,7 @@ const User = sequelize.define('users',{
  		res.redirect('/')
  	})
  })
- //add record
+ //<-----add record--------->
  app.post('/addRecord',(req,res)=>{
 
  	let inputyear = req.body.year
@@ -153,7 +155,7 @@ const User = sequelize.define('users',{
  	})	
  })
 
- //search by author
+ //<-------search by author-------->
  app.post('/searchauthor',(req,res)=>{
 
  	let inputname = req.body.author
@@ -179,7 +181,7 @@ const User = sequelize.define('users',{
 
  	 })
  })
- //search by books
+ //<-------search by books--------->
  app.post('/searchbook',(req,res)=>{
 
  	let inputname = req.body.book
@@ -203,7 +205,7 @@ const User = sequelize.define('users',{
  	})
  })
 
- //sign up users
+ //<-------sign up users------>
  app.post('/signup', (req,res)=>{
  	let inputname = req.body.name;
  	let email = req.body.email;
@@ -214,12 +216,13 @@ const User = sequelize.define('users',{
  		name: inputname,
  		email: email,
  		password: password
- 	}).then(()=>{
+ 	}).then((user)=>{
+ 		req.session.user = user;
  		res.render('search.pug')
  	})
 
  })
- //login 
+ //<------login route--------->
  app.post('/login',(req,res)=>{
  	let inputemail = req.body.email;
  	let password = req.body.password;
@@ -229,12 +232,13 @@ const User = sequelize.define('users',{
  	}).then((data)=>{
  		if(data !== null && password === data.password){
  			let message = `Welcome back ${data.name}!`
+ 			req.session.user = data
  			res.render('search.pug',{message: message})
 
  		}
  	})
  })
-//Log out route
+//<------Log out route------->
 app.get('/logout', (req,res)=>{
   req.session.destroy(function(error) {
 		if(error) {
@@ -248,6 +252,6 @@ app.get('/logout', (req,res)=>{
 
  sequelize.sync()
 
- app.listen(4000,()=>{
- 	console.log("app listening at port 4000")
+ app.listen(4001,()=>{
+ 	console.log("app listening at port 4001")
  })
