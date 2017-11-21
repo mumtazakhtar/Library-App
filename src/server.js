@@ -2,6 +2,7 @@
 const Sequelize = require('sequelize');
 const bodyParser = require('body-parser');
 const express = require('express');
+const bcrypt = require('bcrypt')
 const session = require('express-session')
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
@@ -80,13 +81,13 @@ const User = sequelize.define('users',{
  	
  	res.render('index.pug', {message:req.query.message})
  })
+
  //<-------get search page---------->
  app.get('/search.pug',(req,res)=>{
  	const user = req.session.user;
 
  	if(user === undefined){
  		res.redirect('/?message=' + encodeURIComponent("Please login to search books in library"))
-
  	}
  	else{
  		res.render("search");
@@ -94,7 +95,7 @@ const User = sequelize.define('users',{
  	
  });
 
-  //<-------get add entry page----->
+//<-------get add entry page----->
  app.get('/addEntry.pug',(req,res)=>{
 
  const user = req.session.user;
@@ -107,10 +108,12 @@ console.log(user)
  		res.render("addEntry");
  	 }
  })
+
  //<-----get home page-------->
  app.get('/index.pug',(req,res)=>{
  	res.render('index.pug')
  })
+
  //<-------login page--------->
  app.get('/login',(req,res)=>{
  	res.render('login.pug')
@@ -127,6 +130,7 @@ console.log(user)
  		res.redirect('/')
  	})
  })
+
  //<-----add author-------->
  app.post('/addAuthor',(req,res)=>{
 
@@ -138,6 +142,7 @@ console.log(user)
  		res.redirect('/')
  	})
  })
+
  //<-----add record--------->
  app.post('/addRecord',(req,res)=>{
 
@@ -169,9 +174,6 @@ console.log(user)
  	.then((name)=>{
 
  		if(name!== null){
- 			// req.session.name = name
-
- 		
  		res.render('search.pug',{data: name})
  	   }
  	   else{
@@ -181,6 +183,7 @@ console.log(user)
 
  	 })
  })
+
  //<-------search by books--------->
  app.post('/searchbook',(req,res)=>{
 
@@ -206,38 +209,59 @@ console.log(user)
  })
 
  //<-------sign up users------>
- app.post('/signup', (req,res)=>{
- 	let inputname = req.body.name;
- 	let email = req.body.email;
- 	let password  = req.body.password;
- 	console.log(`------>${email}`)
+ app.post('/signup', (req, res) => {
+    let inputname = req.body.name;
+    let email = req.body.email;
+    let password = req.body.password;
 
- 	User.create({
- 		name: inputname,
- 		email: email,
- 		password: password
- 	}).then((user)=>{
- 		req.session.user = user;
- 		res.render('search.pug')
- 	})
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(password, salt, function(err, hash) {
+            User.create({
+                name: inputname,
+                email: email,
+                password: hash
+            }).then((user) => {
+                req.session.user = user;
+                res.render('search.pug')
+            })
 
- })
- //<------login route--------->
- app.post('/login',(req,res)=>{
- 	let inputemail = req.body.email;
- 	let password = req.body.password;
+        });
+    }) 
 
- 	User.findOne({
- 		where:{ email: inputemail}
- 	}).then((data)=>{
- 		if(data !== null && password === data.password){
- 			let message = `Welcome back ${data.name}!`
- 			req.session.user = data
- 			res.render('search.pug',{message: message})
+})
 
- 		}
- 	})
- })
+ //<------------login route------------>
+
+ app.post('/login', function(request, response) {
+
+    var email = request.body.email
+    var password = request.body.password
+
+    User.findOne({
+        where: {
+            email: email
+        }
+    })
+    .then(function(user) {
+        if (user !== null) {
+        	 const message = `Welcome back ${user.name}!`
+            bcrypt.compare(password, user.password, function(err, res) { // compare PW with hash in DB
+                if(res) {
+                    request.session.user = user;
+
+                    response.render('search.pug', { message: message });
+                } else {
+                    response.redirect('/?message=' + encodeURIComponent("Incorrect password"))
+                }  
+            })    
+        } 
+    })
+    .catch(function(error) {
+        console.error(error)
+    })
+});
+
+
 //<------Log out route------->
 app.get('/logout', (req,res)=>{
   req.session.destroy(function(error) {
